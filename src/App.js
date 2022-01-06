@@ -1,22 +1,31 @@
+import FingerprintJS from '@fingerprintjs/fingerprintjs'
+
 import logo from './logo.svg';
 import './App.css';
+import { useEffect, useState } from 'react';
 
 function App() {
+  const [fingerprint, setFingerprint] = useState('');
+  useEffect(() => {
+    // Initialize an agent at application startup.
+    const fpPromise = FingerprintJS.load()
+
+    ;(async () => {
+      // Get the visitor identifier when you need it.
+      const fp = await fpPromise
+      const result = await fp.get()
+      const ID = result.visitorId;
+      localStorage.setItem('uuid', ID);
+      setFingerprint(ID);
+    })()
+  },[]);
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          uuid: {fingerprint}
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
       </header>
     </div>
   );
